@@ -60,12 +60,8 @@ func main() {
 		return
 	}
 
-	fmt.Printf(`access key id: %s
-				secret key id: %s
-				session token: %s
-				expiration time: %s`,
+	fmt.Printf("export AWS_ACCESS_KEY_ID=%s;\nexport AWS_SECRET_ACCESS_KEY=%s;\nexport AWS_SESSION_TOKEN=%s;\n",
 		*sessionToken.Credentials.AccessKeyId,
 		*sessionToken.Credentials.SecretAccessKey,
-		*sessionToken.Credentials.SessionToken,
-		*sessionToken.Credentials.Expiration)
+		*sessionToken.Credentials.SessionToken)
 }
