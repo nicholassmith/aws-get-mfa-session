@@ -33,6 +33,11 @@ func main() {
 		return
 	}
 
+	if len(mfa.MFADevices) == 0 {
+		fmt.Println("No devices found")
+		return
+	}
+
 	serialNumber := *mfa.MFADevices[0].SerialNumber
 
 	stsSvc := sts.New(sess)
