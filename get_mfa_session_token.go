@@ -20,26 +20,22 @@ func main() {
 	result, err := svc.GetUser(&iam.GetUserInput{})
 
 	if err != nil {
-		fmt.Println("Error", err)
+		fmt.Println("Error getting user: ", err)
 		return
 	}
-
-	fmt.Printf("user %s created %v\n", *result.User.UserName, result.User.CreateDate)
 
 	mfa, err := svc.ListMFADevices(&iam.ListMFADevicesInput{
 		UserName: result.User.UserName,
 	})
 
 	if err != nil {
-		fmt.Println("Error", err)
+		fmt.Println("Error getting MFA Devices: ", err)
 		return
 	}
 
-	for i, device := range mfa.MFADevices {
-		if device == nil {
-			continue
-		}
-		fmt.Printf("device info: %s for user: %s, device number: %d\n", *device.SerialNumber, *device.UserName, i)
+	if len(mfa.MFADevices) == 0 {
+		fmt.Println("No devices found")
+		return
 	}
 
 	serialNumber := *mfa.MFADevices[0].SerialNumber
@@ -56,7 +52,7 @@ func main() {
 	})
 
 	if err != nil {
-		fmt.Println("Error", err)
+		fmt.Println("Error getting session token for input: ", err)
 		return
 	}
 
