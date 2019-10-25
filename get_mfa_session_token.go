@@ -4,20 +4,19 @@ import (
 	"fmt"
 	"flag"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
 )
 
 func main() {
-	region := flag.String("region", "eu-west-1", "AWS Region")
 	token := flag.String("token", "", "MFA Token")
+	profile := flag.String("profile", "", "AWS Profile to load")
 	flag.Parse()
 
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(*region)},
-	)
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+     Profile: *profile,
+	}))
 
 	// Create a IAM service client.
 	svc := iam.New(sess)
