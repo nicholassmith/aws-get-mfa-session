@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"flag"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,8 +11,12 @@ import (
 )
 
 func main() {
+	region := flag.String("region", "eu-west-1", "AWS Region")
+	token := flag.String("token", "", "MFA Token")
+	flag.Parse()
+
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("eu-west-1")},
+		Region: aws.String(*region)},
 	)
 
 	// Create a IAM service client.
@@ -42,9 +47,15 @@ func main() {
 
 	stsSvc := sts.New(sess)
 
-	fmt.Print("Enter MFA token without spaces: ")
+
 	var mfaToken string
-	fmt.Scanln(&mfaToken)
+
+	if *token == "" {
+		fmt.Print("Enter MFA token without spaces: ")
+		fmt.Scanln(&mfaToken)
+	} else {
+		mfaToken = *token
+	}
 
 	sessionToken, err := stsSvc.GetSessionToken(&sts.GetSessionTokenInput{
 		SerialNumber: &serialNumber,
