@@ -2,17 +2,21 @@ package main
 
 import (
 	"fmt"
+	"flag"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
 )
 
 func main() {
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("eu-west-1")},
-	)
+	token := flag.String("token", "", "MFA Token")
+	profile := flag.String("profile", "", "AWS Profile to load")
+	flag.Parse()
+
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+     Profile: *profile,
+	}))
 
 	// Create a IAM service client.
 	svc := iam.New(sess)
@@ -42,9 +46,15 @@ func main() {
 
 	stsSvc := sts.New(sess)
 
-	fmt.Print("Enter MFA token without spaces: ")
+
 	var mfaToken string
-	fmt.Scanln(&mfaToken)
+
+	if *token == "" {
+		fmt.Print("Enter MFA token without spaces: ")
+		fmt.Scanln(&mfaToken)
+	} else {
+		mfaToken = *token
+	}
 
 	sessionToken, err := stsSvc.GetSessionToken(&sts.GetSessionTokenInput{
 		SerialNumber: &serialNumber,
