@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
@@ -15,7 +15,7 @@ func main() {
 	flag.Parse()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-     Profile: *profile,
+		Profile: *profile,
 	}))
 
 	// Create a IAM service client.
@@ -45,7 +45,6 @@ func main() {
 	serialNumber := *mfa.MFADevices[0].SerialNumber
 
 	stsSvc := sts.New(sess)
-
 
 	var mfaToken string
 
